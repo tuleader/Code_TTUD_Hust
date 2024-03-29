@@ -1,11 +1,11 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-const int MAXN = 23;
+const int MaxN = 23;
 
 int n,k,load;
-int c[MAXN][MAXN];
-int x[MAXN];
+int c[MaxN][MaxN];
+int x[MaxN];
 int sum = 0;
 int res = 1e9;
 void input(){
