@@ -2,7 +2,6 @@
 
 using namespace std;
 
-
 int countTime(string start, string end) {
     int res=0;
     res += (int)(end[0]-start[0]) * 36000;
@@ -25,10 +24,9 @@ bool checkNumber(string phoneNumber) {
     return true;
 }
 
-int main() {
+void readLog(unordered_map<string, pair<int, int>>& dataset, int& totalCall, int& incorrectNumber) {
     string log, fromNumber, toNumber, date, fromTime, toTime;
-    unordered_map<string, pair<int, int>> dataset;
-    int totalCall = 0, callTime, incorrectNumber=0;
+    int callTime;
 
     while (true) {
         cin >> log;
@@ -48,6 +46,10 @@ int main() {
             dataset[fromNumber] = make_pair(1, callTime);
         }
     }
+}
+
+void processQueries(unordered_map<string, pair<int, int>>& dataset, int totalCall, int incorrectNumber) {
+    string log, fromNumber;
 
     while (true) {
         cin >> log;
@@ -70,5 +72,14 @@ int main() {
             }
         }
     }
+}
+
+int main() {
+    unordered_map<string, pair<int, int>> dataset;
+    int totalCall = 0, incorrectNumber=0;
+
+    readLog(dataset, totalCall, incorrectNumber);
+    processQueries(dataset, totalCall, incorrectNumber);
+
     return 0;
 }

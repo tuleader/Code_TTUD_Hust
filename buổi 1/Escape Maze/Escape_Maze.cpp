@@ -2,25 +2,29 @@
 
 using namespace std;
 
-int main() {
-    int n, m, r, c, val, row, col;
-    cin >> n >> m >> r >> c;
-    queue<pair<int, int>> qe;
-    vector<vector<int>> maze(n, vector<int>(m)), d(n, vector<int>(m));
+vector<vector<int>> maze, d;
+int dx[4] = {1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};
 
-    int dx[4] = {1, 0, -1, 0}, dy[4] = {0, 1, 0, -1};
-
-
+void readMaze(int n, int m) {
+    int val;
     for (int i = 0; i < n; i++)
         for (int j = 0; j < m; j++) {
             cin >> val;
             maze[i][j] = val;
         }
+}
 
+bool isEscapePossible(int r, int c) {
     if (maze[r - 1][c - 1] == 1) {
         cout << -1 << endl;
-        return 0;
+        return false;
     }
+    return true;
+}
+
+void bfs(int r, int c, int n, int m) {
+    queue<pair<int, int>> qe;
+    int row, col;
     d[r - 1][c - 1] = 0;
     maze[r-1][c-1] = 1;
     qe.push(make_pair(r - 1, c - 1));
@@ -36,7 +40,7 @@ int main() {
                 d[newRow][newCol] = d[row][col] + 1;
                 if (newRow == 0 || newRow == n - 1 || newCol == 0 || newCol == m - 1) {
                     cout << d[newRow][newCol] + 1 << endl;
-                    return 0;
+                    return;
                 }
                 qe.push(make_pair(newRow, newCol));
                 maze[newRow][newCol] = 1;
@@ -44,5 +48,17 @@ int main() {
         }
     }
     cout << -1 << endl;
+}
+
+int main() {
+    int n, m, r, c;
+    cin >> n >> m >> r >> c;
+    maze = vector<vector<int>>(n, vector<int>(m));
+    d = vector<vector<int>>(n, vector<int>(m));
+
+    readMaze(n, m);
+    if (isEscapePossible(r, c)) {
+        bfs(r, c, n, m);
+    }
     return 0;
 }

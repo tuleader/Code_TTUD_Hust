@@ -2,7 +2,7 @@
 
 using namespace std;
 
-inline int largestRectangleInHistogram(vector<int> histogram) {
+int largestRectangleInHistogram(vector<int> histogram) {
     stack<int> s;
     int maxArea = 0;
     int area = 0;
@@ -35,16 +35,15 @@ inline int largestRectangleInHistogram(vector<int> histogram) {
     return maxArea;
 }
 
-
-int main() {
-    int n, m, maxArea = 0;
-    cin >> n >> m;
-    vector<vector<int>> row(n);
+void readFirstRow(int m, vector<vector<int>>& row) {
     for (int i = 0; i < m; i++) {
         int val;
         cin >> val;
         row[0].push_back(val);
     }
+}
+
+void readRemainingRows(int n, int m, vector<vector<int>>& row) {
     for (int i = 1; i < n; i++) {
         for (int j = 0; j < m; j++) {
             int val;
@@ -55,6 +54,17 @@ int main() {
                 row[i].push_back(0);
             }
         }
+    }
+}
+
+int main() {
+    int n, m, maxArea = 0;
+    cin >> n >> m;
+    vector<vector<int>> row(n);
+    readFirstRow(m, row);
+    readRemainingRows(n, m, row);
+
+    for (int i = 0; i < n; i++) {
         int area = largestRectangleInHistogram(row[i]);
         maxArea = max(maxArea, area);
     }
