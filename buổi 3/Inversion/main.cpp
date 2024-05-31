@@ -1,97 +1,88 @@
-// #include<bits/stdc++.h>
-// using namespace std;
-
-// int n;
-// int a[100005];
-// int load = 0;
-
-// void input(){
-//     cin >> n;
-//     for(int i = 1; i <= n; i++){
-//         cin >> a[i];
-//     }
-// }
-
-// void solve(){
-//     for(int i = 1; i <= n; i++){
-//         for(int j = i + 1; j <= n; j++){
-//             if(a[i] > a[j]){
-//                 load++;
-//             }
-//         }
-//     }
-//     cout << load;
-// }
-
-// int main(){
-//     input();
-//     solve();
-//     return 0;
-// }
-
 #include <bits/stdc++.h>
 using namespace std;
-int n;
-int a[100005];
-int temp[100005];
-int load = 0;
-int const MOD = 1e9 + 7;
+const int MOD = 1e9 + 7;
 
-void input()
+// Hàm merge dùng để hợp nhất hai mảng đã được sắp xếp thành một mảng mới
+int merge(vector<int> &arr, int left, int mid, int right)
 {
-    cin >> n;
-    for (int i = 1; i <= n; i++)
-    {
-        cin >> a[i];
-    }
-}
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+    int count = 0;
+    // Tạo mảng tạm để lưu trữ các phần tử
+    vector<int> L(n1), R(n2);
 
-void mergeParts(int *arr, int l, int mid, int r)
-{
-    int i = l, j = mid + 1;
-    int k = 0;
+    // Sao chép dữ liệu vào mảng tạm
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[mid + 1 + j];
 
-    while (i <= mid && j <= r)
-    {
-        int nextValue;
-
-        if (arr[i] < arr[j])
-            nextValue = arr[i++];
+    // Hợp nhất hai mảng tạm vào mảng chính arr
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2)
+    {   
+        if (L[i] <= R[j])
+        {
+            arr[k] = L[i];
+            i++;
+        }
         else
         {
-            nextValue = arr[j++];
-            load += mid - i + 1;
+            arr[k] = R[j];
+            j++;
+            count += n1 - i;
+            count %= MOD;
         }
-
-        temp[k++] = nextValue;
+        k++;
     }
 
-    while (i <= mid)
-        temp[k++] = arr[i++];
-    while (j <= r)
-        temp[k++] = arr[j++];
-
-    for (int i = 0; i < k; i++)
-        arr[l + i] = temp[i];
+    // Sao chép các phần tử còn lại của L và R (nếu có)
+    while (i < n1)
+    {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+    while (j < n2)
+    {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+    return count;
 }
 
-void mergeSort(int *arr, int l, int r)
+// Hàm mergeSort sắp xếp mảng arr từ vị trí left đến right
+int mergeSort(vector<int> &arr, int left, int right)
 {
-    if (l >= r)
-        return;
+    int totalCount = 0;
+    if (left < right)
+    {
+        int mid = left + (right - left) / 2;
 
-    int mid = (l + r) / 2;
+        // Sắp xếp phần đầu và phần sau của mảng
+        totalCount += mergeSort(arr, left, mid);
+        totalCount %= MOD;
 
-    mergeSort(arr, l, mid);
-    mergeSort(arr, mid + 1, r);
-
-    mergeParts(arr, l, mid, r);
+        totalCount += mergeSort(arr, mid + 1, right);
+        totalCount %= MOD;
+        // Hợp nhất hai mảng đã sắp xếp
+        totalCount += merge(arr, left, mid, right);
+        totalCount %= MOD;
+    }
+    return totalCount;
 }
 
 int main()
 {
-    input();
-    mergeSort(a,1,n);
-    cout << load;
+    int n, key;
+    cin >> n;
+    vector<int> arr(n);
+
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+
+    key = mergeSort(arr, 0, n - 1);
+    cout << key % MOD;
     return 0;
 }
